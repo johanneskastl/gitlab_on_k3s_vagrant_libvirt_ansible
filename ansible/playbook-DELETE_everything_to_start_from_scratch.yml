@@ -1,0 +1,49 @@
+---
+- name: 'Uninstall k3s, remove /etc/rancher (and delete the kubeconfig file on the Ansible control host)'
+  hosts: 'k3s1'
+  gather_facts: true
+  become: true
+
+  tasks:
+    - name: 'Run uninstall script'
+      ansible.builtin.command:
+        cmd: '/usr/local/bin/k3s-uninstall.sh'
+        removes: '/usr/local/bin/k3s-uninstall.sh'
+
+    - name: 'Remove /etc/rancher/'
+      ansible.builtin.file:
+        path: '/etc/rancher/'
+        state: 'absent'
+
+    - name: 'Remove /var/lib/rancher/'
+      ansible.builtin.file:
+        path: '/var/lib/rancher/'
+        state: 'absent'
+
+    - name: 'Remove k3s-kubeconfig on Ansible control host'
+      ansible.builtin.file:
+        path: 'k3s-kubeconfig'
+        state: 'absent'
+      delegate_to: 'localhost'
+      become: false
+
+    - name: 'Ansible control host: Remove k3s-kubeconfig-127.0.0.1'
+      ansible.builtin.file:
+        path: 'k3s-kubeconfig-127.0.0.1'
+        state: 'absent'
+      delegate_to: 'localhost'
+      become: false
+
+    - name: 'Ansible control host: Remove k3s-kubeconfig-{{ inventory_hostname }}'
+      ansible.builtin.file:
+        path: 'k3s-kubeconfig-{{ inventory_hostname }}'
+        state: 'absent'
+      delegate_to: 'localhost'
+      become: false
+
+    - name: 'Ansible control host: Remove k3s-token'
+      ansible.builtin.file:
+        path: 'k3s-token'
+        state: 'absent'
+      delegate_to: 'localhost'
+      become: false

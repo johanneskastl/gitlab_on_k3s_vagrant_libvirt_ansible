@@ -1,0 +1,66 @@
+---
+
+- name: 'Install PostgreSQL'
+  hosts: 'k3s1'
+  gather_facts: true
+  become: false
+  module_defaults:
+    kubernetes.core.helm:
+      kubeconfig: './k3s-kubeconfig'
+    kubernetes.core.k8s:
+      kubeconfig: './k3s-kubeconfig'
+    kubernetes.core.k8s_info:
+      kubeconfig: './k3s-kubeconfig'
+
+  pre_tasks:
+
+    - name: 'Wait until all pods are running in the kube-system namespace'
+      delegate_to: 'localhost'
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        namespace: kube-system
+      register: pod_list
+      until: |
+        pod_list | json_query("resources[*].status.phase") | unique | sort == ["Running"]
+        or
+        pod_list | json_query("resources[*].status.phase") | unique | sort == ["Running", "Succeeded"]
+      retries: 12
+      delay: 10
+
+  tasks:
+
+    - name: 'Create the postgresql namespace'
+      delegate_to: 'localhost'
+      kubernetes.core.k8s:
+        name: 'postgresql'
+        api_version: 'v1'
+        kind: 'Namespace'
+        state: 'present'
+
+    - name: 'Install PostgreSQL via the helm chart'
+      delegate_to: 'localhost'
+      kubernetes.core.helm:
+        chart_ref: oci://registry-1.docker.io/bitnamicharts/postgresql
+        release_name: db
+        release_namespace: postgresql
+        release_values:
+          # This is a demo setup. Please do NEVER EVER put passwords
+          # in a playbook. Ansible Vault exist, you know...
+          auth:
+            postgresPassword: supertotallysecure
+            username: fordprefect
+            password: dontpanic
+            database: gitlab
+
+    - name: 'Wait until all pods are ready'
+      delegate_to: 'localhost'
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        namespace: postgresql
+      register: pod_list_ready
+      until: |
+        pod_list_ready | json_query("resources[*].status.containerStatuses[*].ready") | unique | sort == [[true]]
+      retries: 36
+      delay: 10

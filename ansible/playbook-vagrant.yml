@@ -1,0 +1,10 @@
+---
+
+- name: 'Runplaybook-bootstrap_python.yml'
+  ansible.builtin.import_playbook: playbook-bootstrap_python.yml
+
+- name: 'Run playbook-install_k3s.yml'
+  ansible.builtin.import_playbook: playbook-install_k3s.yml
+
+- name: 'Run playbook-k3s_configure_private_registries.yml'
+  ansible.builtin.import_playbook: playbook-k3s_configure_private_registries.yml

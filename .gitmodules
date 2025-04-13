@@ -4,3 +4,6 @@
 [submodule "ansible/roles/johanneskastl.install_k3s"]
 	path = ansible/roles/johanneskastl.install_k3s
 	url = https://github.com/johanneskastl/ansible-role-install_k3s
+[submodule "ansible/roles/johanneskastl.k3s_configure_private_registries"]
+	path = ansible/roles/johanneskastl.k3s_configure_private_registries
+	url = https://github.com/johanneskastl/ansible-role-k3s_configure_private_registries.git

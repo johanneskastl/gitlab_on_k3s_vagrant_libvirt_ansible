@@ -1,0 +1,10 @@
+---
+- name: 'Configure private registries for k3s'
+  hosts: 'k3s1'
+  gather_facts: true
+  become: true
+
+  roles:
+    - role: 'johanneskastl.k3s_configure_private_registries'
+      when:
+        - k3s_configure_private_registries | bool

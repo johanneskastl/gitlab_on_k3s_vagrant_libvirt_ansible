@@ -14,14 +14,6 @@
 
   tasks:
 
-    - name: 'Create the gitlab namespace'
-      delegate_to: 'localhost'
-      kubernetes.core.k8s:
-        name: 'gitlab'
-        api_version: 'v1'
-        kind: 'Namespace'
-        state: 'present'
-
     - name: 'Create the postgres-secret secret'
       delegate_to: 'localhost'
       kubernetes.core.k8s:

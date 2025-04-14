@@ -1,0 +1,60 @@
+---
+
+- name: 'Install the Operator Lifecycle Manager'
+  hosts: 'k3s1'
+  gather_facts: true
+  become: false
+  module_defaults:
+    kubernetes.core.helm:
+      kubeconfig: './k3s-kubeconfig'
+    kubernetes.core.k8s:
+      kubeconfig: './k3s-kubeconfig'
+    kubernetes.core.k8s_info:
+      kubeconfig: './k3s-kubeconfig'
+
+  handlers:
+
+    - name: 'Wait for 1 minute'
+      delegate_to: 'localhost'
+      ansible.builtin.pause:
+        minutes: 1
+
+  tasks:
+
+    - name: 'Create the olm namespace'
+      delegate_to: 'localhost'
+      kubernetes.core.k8s:
+        name: 'olm'
+        api_version: 'v1'
+        kind: 'Namespace'
+        state: 'present'
+
+    - name: 'Install the Operator Lifecycle Manager CRDs'
+      delegate_to: 'localhost'
+      kubernetes.core.k8s:
+        state: 'present'
+        src: 'https://github.com/operator-framework/operator-lifecycle-manager/releases/latest/download/crds.yaml'
+
+    - name: 'Install the Operator Lifecycle Manager manifests'
+      delegate_to: 'localhost'
+      kubernetes.core.k8s:
+        state: 'present'
+        src: 'https://github.com/operator-framework/operator-lifecycle-manager/releases/latest/download/olm.yaml'
+      notify:
+        - 'Wait for 1 minute'
+
+    - name: 'Wait until OLM is fully installed, to have the CRDs available'
+      delegate_to: localhost
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        namespace: olm
+      register: pod_list
+      until:
+        '
+        pod_list | json_query("resources[*].status.phase") | unique == ["Running"]
+        or
+        pod_list | json_query("resources[*].status.phase") | unique | sort == ["Running", "Succeeded"]
+        '
+      retries: 12
+      delay: 10

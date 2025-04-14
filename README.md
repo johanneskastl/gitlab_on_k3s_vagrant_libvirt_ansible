@@ -9,9 +9,9 @@ chart](https://docs.gitlab.com/charts/).
 There is a branch `with-gitlab-runner` that also installs a [Gitlab
 Runner](https://docs.gitlab.com/runner/install/kubernetes/).
 
-If I get it working, there will be a branch called `gitlab-operator` that
-installs GitLab using the [GitLab
-operator](https://operatorhub.io/operator/gitlab-operator-kubernetes).
+This branch called `gitlab-operator` installs GitLab using the [GitLab
+operator](https://operatorhub.io/operator/gitlab-operator-kubernetes), while the
+`main` branch uses the official helm chart for that.
 
 Default OS is openSUSE Leap 15.6, but that can be changed in the Vagrantfile.
 Please be aware, that this might break the Ansible provisioning.

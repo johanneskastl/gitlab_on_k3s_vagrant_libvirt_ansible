@@ -1,0 +1,101 @@
+---
+
+- name: 'Install the Gitlab operator'
+  hosts: 'k3s1'
+  gather_facts: true
+  become: false
+  module_defaults:
+    kubernetes.core.helm:
+      kubeconfig: './k3s-kubeconfig'
+    kubernetes.core.k8s:
+      kubeconfig: './k3s-kubeconfig'
+    kubernetes.core.k8s_info:
+      kubeconfig: './k3s-kubeconfig'
+
+  handlers:
+
+    - name: 'Wait until all pods are ready'
+      delegate_to: 'localhost'
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        namespace: gitlab
+      register: pod_list_ready
+      until: |
+        pod_list_ready | json_query("resources[*].status.containerStatuses[*].ready") | unique | sort == [[true]]
+      retries: 36
+      delay: 10
+
+  tasks:
+
+    - name: 'Create the gitlab namespace'
+      delegate_to: 'localhost'
+      kubernetes.core.k8s:
+        name: 'gitlab'
+        api_version: 'v1'
+        kind: 'Namespace'
+        state: 'present'
+
+    - name: 'Create the gitlab OperatorGroup'
+      delegate_to: 'localhost'
+      kubernetes.core.k8s:
+        state: 'present'
+        resource_definition: |
+          apiVersion: operators.coreos.com/v1
+          kind: OperatorGroup
+          metadata:
+            name: gitlab-operatorgroup
+            namespace: gitlab
+          spec:
+            targetNamespaces:
+            - gitlab
+
+    - name: 'Create the gitlab Subscription'
+      delegate_to: 'localhost'
+      kubernetes.core.k8s:
+        state: 'present'
+        resource_definition: |
+          apiVersion: operators.coreos.com/v1alpha1
+          kind: Subscription
+          metadata:
+            name: gitlab-subscription
+            namespace: gitlab
+          spec:
+            channel: stable
+            name: gitlab-operator-kubernetes
+            source: operatorhubio-catalog
+            sourceNamespace: olm
+      notify:
+        - 'Wait until all pods are ready'
+
+    - name: 'Wait until the gitlab-controller-manager pod is running'
+      delegate_to: 'localhost'
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        namespace: gitlab
+        label_selectors:
+          - control-plane=controller-manager
+        wait_condition:
+          status: "True"
+          type: Ready
+        wait: true
+        wait_sleep: 10
+        wait_timeout: 1800
+
+    - name: 'Wait until all pods are running in the gitlab namespace'
+      delegate_to: 'localhost'
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        namespace: gitlab
+      register: pod_list
+      until: |
+        pod_list | json_query("resources[*].status.phase") | unique | sort == ["Running"]
+        or
+        pod_list | json_query("resources[*].status.phase") | unique | sort == ["Running", "Succeeded"]
+      retries: 12
+      delay: 10
+
+    - name: 'Flush handlers'
+      ansible.builtin.meta: flush_handlers

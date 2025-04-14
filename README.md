@@ -34,6 +34,28 @@ host**, i.e. the machine where you are executing Vagrant and Ansible from.
 1. Log in using the username `root` and the password `atotallysecurepassword`.
 1. Party!
 
+## Supplying a Docker Hub token to avoid rate limiting
+
+To not run into Docker Hub's recent rate limiting when pulling without
+authentication, you can create a file containing a token for the Docker Hub.
+This file, when called
+`ansible/group_vars/all/k3s_configure_private_registries.yml`, will be ignored
+by Git.
+
+```yaml
+k3s_configure_private_registries: true
+registry_configs:
+  - url: docker.io
+    auth:
+      username: DOCKER_HUB_USER_NAME_GOES_HERE
+      password: DOCKER_HUB_TOKEN_GOES_HERE
+    tls:
+      insecure_skip_verify: false
+```
+
+This setup will use this to set up k3s's `/etc/rancher/k3s/registries.yaml` file
+so all image from the Docker Hub will be pulled using your token.
+
 ## Cleaning up
 
 The VMs can be torn down after playing around using `vagrant destroy`. This will

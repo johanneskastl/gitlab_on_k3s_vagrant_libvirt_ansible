@@ -18,5 +18,8 @@
 - name: 'Run playbook-olm_installation.yml'
   ansible.builtin.import_playbook: playbook-olm_installation.yml
 
+- name: 'Run playbook-gitlab-operator_installation.yml'
+  ansible.builtin.import_playbook: playbook-gitlab-operator_installation.yml
+
 - name: 'Run playbook-gitlab_installation.yml'
   ansible.builtin.import_playbook: playbook-gitlab_installation.yml

@@ -15,6 +15,9 @@
 - name: 'Run playbook-postgresql_installation.yml'
   ansible.builtin.import_playbook: playbook-postgresql_installation.yml
 
+- name: 'Run playbook-cert-manager_installation.yml'
+  ansible.builtin.import_playbook: playbook-cert-manager_installation.yml
+
 - name: 'Run playbook-olm_installation.yml'
   ansible.builtin.import_playbook: playbook-olm_installation.yml
 

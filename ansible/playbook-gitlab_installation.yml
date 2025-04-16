@@ -72,7 +72,7 @@
             install: false
           # https://docs.gitlab.com/charts/installation/command-line-options/#advanced-gitlab-configuration
           gitlab-runner:
-            install: false
+            install: true
           prometheus:
             install: false
           registry:

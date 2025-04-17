@@ -190,7 +190,7 @@
       register: pod_list_migrations
       until: |
         pod_list_migrations | json_query("resources[*].status.containerStatuses[*].state.terminated.reason") == [["Completed"]]
-      retries: 36
+      retries: 48
       delay: 10
 
     - name: 'Wait until the gitlab-webservice pod is running'
@@ -206,7 +206,7 @@
           type: Ready
         wait: true
         wait_sleep: 10
-        wait_timeout: 1800
+        wait_timeout: 3000
 
     - name: 'Wait until the gitlab URL is reachable'
       ansible.builtin.uri:

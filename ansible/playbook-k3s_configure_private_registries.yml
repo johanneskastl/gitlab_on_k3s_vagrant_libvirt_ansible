@@ -7,4 +7,5 @@
   roles:
     - role: 'johanneskastl.k3s_configure_private_registries'
       when:
+        - k3s_configure_private_registries is defined
         - k3s_configure_private_registries | bool

@@ -175,13 +175,11 @@
         namespace: gitlab
         label_selectors:
           - app=migrations
-        wait_condition:
-          # reason: Completed
-          status: "False"
-          type: Ready
-        wait: true
-        wait_sleep: 10
-        wait_timeout: 1800
+      register: pod_list_migrations
+      until: |
+        pod_list_migrations | json_query("resources[*].status.containerStatuses[*].state.terminated.reason") == [["Completed"]]
+      retries: 36
+      delay: 10
 
     - name: 'Wait until the gitlab-webservice pod is running'
       delegate_to: 'localhost'

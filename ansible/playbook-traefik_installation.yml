@@ -1,0 +1,47 @@
+---
+
+- name: 'Install Traefik'
+  hosts: 'k3s1'
+  gather_facts: true
+  become: false
+  module_defaults:
+    kubernetes.core.helm:
+      kubeconfig: './k3s-kubeconfig'
+    kubernetes.core.k8s:
+      kubeconfig: './k3s-kubeconfig'
+    kubernetes.core.k8s_info:
+      kubeconfig: './k3s-kubeconfig'
+
+  tasks:
+
+    - name: 'Install Traefik'
+      delegate_to: 'localhost'
+      kubernetes.core.helm:
+        chart_repo_url: 'https://traefik.github.io/charts'
+        release_name: 'traefik'
+        chart_ref: 'traefik'
+        release_namespace: 'kube-system'
+        release_values:
+          ports:
+            gitlab-shell:
+              port: 22222
+              protocol: TCP
+              expose:
+                default: true
+              exposedPort: 22222
+
+    - name: 'Wait until all pods are running'
+      delegate_to: localhost
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        namespace: kube-system
+      register: pod_list
+      until:
+        '
+        pod_list | json_query("resources[*].status.phase") | unique | sort == ["Running"]
+        or
+        pod_list | json_query("resources[*].status.phase") | unique | sort == ["Running", "Succeeded"]
+        '
+      retries: 12
+      delay: 10

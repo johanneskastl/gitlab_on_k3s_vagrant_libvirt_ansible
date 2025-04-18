@@ -187,9 +187,9 @@
         namespace: gitlab
         label_selectors:
           - app=migrations
-      register: pod_list_migrations
+      register: migrations_pod_completed
       until: |
-        pod_list_migrations | json_query("resources[*].status.containerStatuses[*].state.terminated.reason") == [["Completed"]]
+        migrations_pod_completed | json_query("resources[*].status.containerStatuses[*].state.terminated.reason") == [["Completed"]]
       retries: 120
       delay: 10
 

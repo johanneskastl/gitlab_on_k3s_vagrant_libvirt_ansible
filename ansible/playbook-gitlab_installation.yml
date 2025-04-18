@@ -210,6 +210,21 @@
         wait_sleep: 10
         wait_timeout: 3000
 
+    - name: 'Wait until the gitlab-sidekiq pod is running'
+      delegate_to: 'localhost'
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        namespace: gitlab
+        label_selectors:
+          - app=sidekiq
+        wait_condition:
+          status: "True"
+          type: Ready
+        wait: true
+        wait_sleep: 10
+        wait_timeout: 3000
+
     - name: 'Wait until the gitlab URL is reachable'
       ansible.builtin.uri:
         url: "http://gitlab.{{ hostvars['k3s1']['ansible_default_ipv4']['address'] }}.sslip.io"

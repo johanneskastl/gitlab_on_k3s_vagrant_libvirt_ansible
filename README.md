@@ -9,9 +9,13 @@ chart](https://docs.gitlab.com/charts/).
 There is a branch `with-gitlab-runner` that also installs a [Gitlab
 Runner](https://docs.gitlab.com/runner/install/kubernetes/).
 
-If I get it working, there will be a branch called `gitlab-operator` that
-installs GitLab using the [GitLab
-operator](https://operatorhub.io/operator/gitlab-operator-kubernetes).
+There is a branch called `gitlab-operator` that installs GitLab using the
+[GitLab operator](https://operatorhub.io/operator/gitlab-operator-kubernetes).
+
+And finally a branched called `gitlab-operator-with-gitlab-runner` that installs
+GitLab using the [GitLab
+operator](https://operatorhub.io/operator/gitlab-operator-kubernetes) and has a
+Gitlab Runner.
 
 Default OS is openSUSE Leap 15.6, but that can be changed in the Vagrantfile.
 Please be aware, that this might break the Ansible provisioning.

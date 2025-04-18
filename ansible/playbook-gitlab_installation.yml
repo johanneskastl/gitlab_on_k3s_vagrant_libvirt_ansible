@@ -67,7 +67,7 @@
                 # https://docs.gitlab.com/charts/advanced/external-db/
                 postgresql:
                   install: false
-                # https://docs.gitlab.com/charts/installation/command-line-options/#advanced-gitlab-configuration
+                # the operator does not respect this setting at all...
                 gitlab-runner:
                   install: false
                 prometheus:
@@ -83,9 +83,15 @@
                     minReplicas: 1
                     maxReplicas: 1
                   sidekiq:
-                    replicas: 1
+                    minReplicas: 1
+                    maxReplicas: 1
+                    pods:
+                      - name: all-in-1
+                        minReplicas: 1
+                        maxReplicas: 1
                   kas:
                     minReplicas: 1
+                    maxReplicas: 1
                 global:
                   #################################
                   # enabled subcharts

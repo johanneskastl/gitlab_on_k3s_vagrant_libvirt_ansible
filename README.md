@@ -6,6 +6,9 @@ Vagrant-libvirt setup that creates a VM with k3s and installs
 The installation is done using the [official helm
 chart](https://docs.gitlab.com/charts/).
 
+There is a branch `with-gitlab-runner` that also installs a [Gitlab
+Runner](https://docs.gitlab.com/runner/install/kubernetes/).
+
 If I get it working, there will be a branch called `gitlab-operator` that
 installs GitLab using the [GitLab
 operator](https://operatorhub.io/operator/gitlab-operator-kubernetes).

@@ -12,7 +12,7 @@ Runner](https://docs.gitlab.com/runner/install/kubernetes/).
 There is a branch called `gitlab-operator` that installs GitLab using the
 [GitLab operator](https://operatorhub.io/operator/gitlab-operator-kubernetes).
 
-And finally a branched called `gitlab-operator-with-gitlab-runner` that installs
+And finally a branch called `gitlab-operator-with-gitlab-runner` that installs
 GitLab using the [GitLab
 operator](https://operatorhub.io/operator/gitlab-operator-kubernetes) and has a
 Gitlab Runner.

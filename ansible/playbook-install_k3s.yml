@@ -9,3 +9,4 @@
       tls_san:
         - "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
         - "k3s.{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}.sslip.io"
+      disable_something: 'traefik'

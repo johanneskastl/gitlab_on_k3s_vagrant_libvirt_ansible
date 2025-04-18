@@ -215,6 +215,25 @@
       retries: 11
       delay: 10
 
+    - name: 'Install an ingressrouteTCP for GitLab SSH'
+      delegate_to: 'localhost'
+      kubernetes.core.k8s:
+        state: 'present'
+        resource_definition: |
+          apiVersion: traefik.io/v1alpha1
+          kind: IngressRouteTCP
+          metadata:
+            name: gitlab-ssh
+            namespace: gitlab
+          spec:
+            entryPoints:
+              - gitlab-shell
+            routes:
+              - match: HostSNI(`*`)
+                services:
+                  - name: gitlab-gitlab-shell
+                    port: 22
+
     - name: 'Gitlab URL'
       delegate_to: 'localhost'
       ansible.builtin.debug:

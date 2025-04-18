@@ -13,6 +13,11 @@ This branch called `gitlab-operator` installs GitLab using the [GitLab
 operator](https://operatorhub.io/operator/gitlab-operator-kubernetes), while the
 `main` branch uses the official helm chart for that.
 
+And finally a branched called `gitlab-operator-with-gitlab-runner` that installs
+GitLab using the [GitLab
+operator](https://operatorhub.io/operator/gitlab-operator-kubernetes) and has a
+Gitlab Runner.
+
 Default OS is openSUSE Leap 15.6, but that can be changed in the Vagrantfile.
 Please be aware, that this might break the Ansible provisioning.
 

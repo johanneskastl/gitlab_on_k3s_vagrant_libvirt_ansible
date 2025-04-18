@@ -9,12 +9,11 @@ chart](https://docs.gitlab.com/charts/).
 There is a branch `with-gitlab-runner` that also installs a [Gitlab
 Runner](https://docs.gitlab.com/runner/install/kubernetes/).
 
-This branch called `gitlab-operator` installs GitLab using the [GitLab
-operator](https://operatorhub.io/operator/gitlab-operator-kubernetes), while the
-`main` branch uses the official helm chart for that.
+There is a branch called `gitlab-operator` that installs GitLab using the
+[GitLab operator](https://operatorhub.io/operator/gitlab-operator-kubernetes).
 
-And finally a branched called `gitlab-operator-with-gitlab-runner` that installs
-GitLab using the [GitLab
+This branch called `gitlab-operator-with-gitlab-runner` installs GitLab using
+the [GitLab
 operator](https://operatorhub.io/operator/gitlab-operator-kubernetes) and has a
 Gitlab Runner.
 

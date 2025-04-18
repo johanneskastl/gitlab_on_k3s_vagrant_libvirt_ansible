@@ -9,6 +9,9 @@
 - name: 'Run playbook-k3s_configure_private_registries.yml'
   ansible.builtin.import_playbook: playbook-k3s_configure_private_registries.yml
 
+- name: 'Run playbook-traefik_installation.yml'
+  ansible.builtin.import_playbook: playbook-traefik_installation.yml
+
 - name: 'Run playbook-postgresql_installation.yml'
   ansible.builtin.import_playbook: playbook-postgresql_installation.yml
 
